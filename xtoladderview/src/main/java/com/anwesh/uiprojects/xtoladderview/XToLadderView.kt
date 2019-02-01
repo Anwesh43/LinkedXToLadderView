@@ -34,8 +34,7 @@ fun Canvas.drawXTLNode(i : Int, scale : Float, paint : Paint) {
     val h : Float = height.toFloat()
     val gap : Float = h / (nodes + 1)
     val size : Float = gap / sizeFactor
-    val xGap : Float = size * Math.cos(Math.PI/4).toFloat()
-    val yGap : Float = (2 * size * Math.sin(Math.PI/4).toFloat()) / lines
+    val yGap : Float = (2 * size) / lines
     val sc1 : Float = scale.divideScale(0, 2)
     val sc2 : Float = scale.divideScale(1, 2)
     paint.strokeCap = Paint.Cap.ROUND
@@ -52,11 +51,12 @@ fun Canvas.drawXTLNode(i : Int, scale : Float, paint : Paint) {
     }
     for (j in 0..(lines - 1)) {
         val sc : Float = sc2.divideScale(j, lines)
-        val p1 : Int = j / 2
-        val xSize : Float = (xGap - xGap/2 * j) * p1 + (xGap - xGap/2 * (lines-1 - j)) * (1 - p1)
+        val r : Float = -size + yGap * j
+        val x : Float = r * Math.cos(Math.PI / 4).toFloat()
+        val y : Float = r * Math.sin(Math.PI/4).toFloat()
         save()
-        translate(0f, yGap * j)
-        drawLine(-xSize * sc, 0f, xSize * sc, 0f, paint)
+        translate(0f, y)
+        drawLine(-x * sc, 0f, x * sc, 0f, paint)
         restore()
     }
     restore()
