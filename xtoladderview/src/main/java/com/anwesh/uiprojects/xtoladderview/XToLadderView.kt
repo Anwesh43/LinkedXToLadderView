@@ -13,7 +13,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 
 val nodes : Int = 5
-val lines : Int = 4
+val lines : Int = 6
 val xlines : Int = 2
 val scGap : Float = 0.05f
 val scDiv : Double = 0.51
@@ -21,6 +21,8 @@ val strokeFactor : Int = 90
 val sizeFactor : Float = 2.8f
 val foreColor : Int = Color.parseColor("#01579B")
 val backColor : Int = Color.parseColor("#BDBDBD")
+val delay : Long = 15
+val deg : Float = 30F
 
 fun Int.inverse() : Float = 1f / this
 fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
@@ -45,15 +47,17 @@ fun Canvas.drawXTLNode(i : Int, scale : Float, paint : Paint) {
     for (j in 0..(xlines - 1)) {
         val sc : Float = sc1.divideScale(j, xlines)
         save()
-        rotate(45f * (1f - 2 * j) * sc)
+        rotate(deg * (1f - 2 * j) * sc)
         drawLine(0f, -size, 0f, size, paint)
         restore()
     }
     for (j in 0..(lines - 1)) {
         val sc : Float = sc2.divideScale(j, lines)
-        val r : Float = -size + yGap * j
-        val x : Float = r * Math.cos(Math.PI / 4).toFloat()
-        val y : Float = r * Math.sin(Math.PI/4).toFloat()
+        val k : Int = lines / 2
+        var p : Int = j / k
+        val r : Float = (-size + yGap * j) * (1 - p) + p * (yGap * (j % k + 1))
+        val x : Float = r * Math.cos((90F - deg) * Math.PI / 180).toFloat()
+        val y : Float = r * Math.sin((90f - deg) * Math.PI / 180).toFloat()
         save()
         translate(0f, y)
         drawLine(-x * sc, 0f, x * sc, 0f, paint)
@@ -106,7 +110,7 @@ class XToLadderView(ctx : Context) : View(ctx) {
             if (animated) {
                 cb()
                 try {
-                    Thread.sleep(50)
+                    Thread.sleep(delay)
                     view.invalidate()
                 } catch(ex : Exception) {
 
