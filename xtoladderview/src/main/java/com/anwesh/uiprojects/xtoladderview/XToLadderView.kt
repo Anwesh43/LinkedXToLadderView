@@ -35,7 +35,7 @@ fun Canvas.drawXTLNode(i : Int, scale : Float, paint : Paint) {
     val gap : Float = h / (nodes + 1)
     val size : Float = gap / sizeFactor
     val xGap : Float = size * Math.cos(Math.PI/4).toFloat()
-    val yGap : Float = (2 * size) / lines
+    val yGap : Float = (2 * size * Math.sin(Math.PI/4).toFloat()) / lines
     val sc1 : Float = scale.divideScale(0, 2)
     val sc2 : Float = scale.divideScale(1, 2)
     paint.strokeCap = Paint.Cap.ROUND
@@ -77,5 +77,25 @@ class XToLadderView(ctx : Context) : View(ctx) {
             }
         }
         return true
+    }
+
+    data class State(var scale : Float = 0f, var dir : Float = 0f, var prevScale : Float = 0f) {
+
+        fun update(cb : (Float) -> Unit) {
+            scale += scale.updateValue(dir, xlines, lines)
+            if (Math.abs(scale - prevScale) > 1) {
+                scale = prevScale + dir
+                dir = 0f
+                prevScale = scale
+                cb(prevScale)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            if (dir == 0f) {
+                dir = 1f - 2 * prevScale
+                cb()
+            }
+        }
     }
 }
