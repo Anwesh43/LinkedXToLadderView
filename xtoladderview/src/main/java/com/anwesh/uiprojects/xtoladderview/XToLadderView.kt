@@ -194,4 +194,26 @@ class XToLadderView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : XToLadderView) {
+
+        private val animator : Animator = Animator(view)
+        private val xtl : XToLadder = XToLadder(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            xtl.draw(canvas, paint)
+            animator.animate {
+                xtl.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            xtl.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
