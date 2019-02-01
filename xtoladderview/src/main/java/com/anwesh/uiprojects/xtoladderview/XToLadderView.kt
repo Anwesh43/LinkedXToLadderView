@@ -217,4 +217,13 @@ class XToLadderView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : XToLadderView {
+            val view : XToLadderView = XToLadderView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
